@@ -1,4 +1,4 @@
-import React from "react";
+import Link from "next/link";
 
 interface User {
   id: number;
@@ -16,8 +16,12 @@ const UserTable = async () => {
     <table className="table table-bordered">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Email</th>
+          <th>
+            <Link href="/users?sortOrder=name">Name</Link>
+          </th>
+          <th>
+            <Link href="/users?sortOrder=email">Email</Link>
+          </th>
         </tr>
       </thead>
       <tbody>
