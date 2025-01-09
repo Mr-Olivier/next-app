@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
           select: {
             id: true,
             email: true,
-            //hashedPassword: true,
+            hashedPassword: true,
             name: true,
             emailVerified: true,
             image: true,
