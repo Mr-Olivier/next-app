@@ -17,13 +17,39 @@ export const authOptions: NextAuthOptions = {
           type: "password",
           placeholder: "Password",
         },
-        async authorize(credentials, req) {
-          if (!credentials?.email || !credentials.password) return null;
+      },
+      async authorize(credentials, req) {
+        if (!credentials?.email || !credentials.password) return null;
 
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
-          });
-        },
+        type UserWithPassword = {
+          id: string;
+          email: string | null;
+          hashedPassword: string | null;
+          name: string | null;
+          emailVerified: Date | null;
+          image: string | null;
+        };
+
+        const user = (await prisma.user.findUnique({
+          where: { email: credentials.email },
+          select: {
+            id: true,
+            email: true,
+            //hashedPassword: true,
+            name: true,
+            emailVerified: true,
+            image: true,
+          },
+        })) as UserWithPassword;
+
+        if (!user) return null;
+
+        const passwordMatch = await bcrypt.compare(
+          credentials.password,
+          user.hashedPassword!
+        );
+
+        return passwordMatch ? user : null;
       },
     }),
     GoogleProvider({
